@@ -1,7 +1,15 @@
 import math
 
-# n = int(input("input a number greater than 0: "))
-test = list(range(17))
+f = input("input a .txt file with numbers: ")
+# fil = open("7_lab_2_1.txt")
+fil = open(f)
+str = fil.read()
+test = [int(s) for s in str.split() if s.isdigit()]
+print(test)
+print("You have a list of numbers. You will be given the sum of elements in range l to r.")
+ll = int(input("Enter l: "))
+rr = int(input("Enter r: "))
+# это возврaщает все числа в файле(без пробелов и в массиве)
 wh = len(test)
 # количество блоков
 nu = int(math.sqrt(wh - 1)) + 1
@@ -9,18 +17,23 @@ nu = int(math.sqrt(wh - 1)) + 1
 le = int((wh - 1) / nu) + 1
 # считаем сумму в блоках
 presum = [0] * nu
-for i in test:
+i = 0
+while i < wh:
     presum[int(i / le)] += test[i]
-ll = 2
-rr = 8
-sum = 0
+    i += 1
 # тк нумерация идет с нуля, предположим, что пользователь считает, что 0й элемент это первый
-i = ll-1
+sum = 0
+i = ll - 1
 while i < rr:
-    if i % le == 0 and i + le - 1 <= rr-1:
+    if i % le == 0 and i + le - 1 <= rr - 1:
         sum += presum[int(i / le)]
         i += le
     else:
         sum += test[i]
         i += 1
 print(sum)
+# как вариант еще можно сделать так, чтоб пользователь прямо в программе вводил числа через запятую или пробе;:
+# print("enter a list of numbers: ")
+# str2 = input()
+# test2 = [int(s) for s in str2.split() if s.isdigit()]
+# если вместо test подставить test2, порграмма также посчитает
