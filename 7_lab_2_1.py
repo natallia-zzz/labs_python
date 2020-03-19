@@ -5,11 +5,18 @@ f = input("input a .txt file with numbers: ")
 fil = open(f)
 str = fil.read()
 test = [int(s) for s in str.split() if s.isdigit()]
+# это возврaщает все числа в файле(без пробелов и в массиве)
 print(test)
 print("You have a list of numbers. You will be given the sum of elements in range l to r.")
 ll = int(input("Enter l: "))
+while ll <= 0:
+    print("Integer must be positive. reenter")
+    ll = int(input("Enter l: "))
 rr = int(input("Enter r: "))
-# это возврaщает все числа в файле(без пробелов и в массиве)
+while rr <= 0:
+    print("Integer must be positive. reenter")
+    rr = int(input("Enter r: "))
+# длина массива
 wh = len(test)
 # количество блоков
 nu = int(math.sqrt(wh - 1)) + 1
