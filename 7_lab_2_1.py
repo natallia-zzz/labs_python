@@ -1,46 +1,70 @@
 import math
 
-f = input("input a .txt file with numbers: ")
-# fil = open("7_lab_2_1.txt")
-fil = open(f)
-str = fil.read()
-test = [int(s) for s in str.split() if s.isdigit()]
-# это возврaщает все числа в файле(без пробелов и в массиве)
-print(test)
-print("You have a list of numbers. You will be given the sum of elements in range l to r.")
-ll = int(input("Enter l: "))
-while ll <= 0:
-    print("Integer must be positive. reenter")
-    ll = int(input("Enter l: "))
-rr = int(input("Enter r: "))
-while rr <= 0:
-    print("Integer must be positive. reenter")
-    rr = int(input("Enter r: "))
-# длина массива
-wh = len(test)
-# количество блоков
-nu = int(math.sqrt(wh - 1)) + 1
-# количество чисел в блоках.
-le = int((wh - 1) / nu) + 1
-# считаем сумму в блоках
-presum = [0] * nu
-i = 0
-while i < wh:
-    presum[int(i / le)] += test[i]
-    i += 1
-# тк нумерация идет с нуля, предположим, что пользователь считает, что 0й элемент это первый
-sum = 0
-i = ll - 1
-while i < rr:
-    if i % le == 0 and i + le - 1 <= rr - 1:
-        sum += presum[int(i / le)]
-        i += le
+
+def create_array(zz):
+    if zz == "file":
+        f = input("Подключаем файл. Наберите путь к .txt файлу: ")
+        fil = open(f)
+        str1 = fil.read()
+        test1 = [int(s) for s in str1.split() if s.isdigit()]
+        return test1
+    elif zz == "input":
+        print("Введите массив чисел ")
+        str2 = input()
+        test2 = [int(s) for s in str2.split() if s.isdigit()]
+        return test2
     else:
-        sum += test[i]
-        i += 1
-print(sum)
-# как вариант еще можно сделать так, чтоб пользователь прямо в программе вводил числа через запятую или пробе;:
-# print("enter a list of numbers: ")
-# str2 = input()
-# test2 = [int(s) for s in str2.split() if s.isdigit()]
-# если вместо test подставить test2, порграмма также посчитает
+        print("К сожалению вы не выбрали предложенные результаты. Создадим массив для примера")
+        while True:
+            try:
+                rand = int(input("введите длину: "))
+                break
+            except ValueError:
+                print("повторите ввод: ")
+        test3 = list(range(rand))
+        return test3
+
+
+def sqrt_decomposition(test):
+    print("Массив: " + str(test))
+    print("Выберите отрезок l до r.")
+    wh = len(test)  # длина массива
+    while True:
+        try:
+            ll = int(input("Введите l: "))
+            if ll < wh:
+                break
+            else:
+                print("повторите ввод: ")
+        except ValueError:
+            print("повторите ввод: ")
+    while True:
+        try:
+            rr = int(input("Enter r: "))
+            if rr < wh and rr < ll:
+                break
+            else:
+                print("повторите ввод: ")
+        except ValueError:
+            print("повторите ввод: ")
+    nu = int(math.sqrt(wh - 1)) + 1  # количество блоков и чисел в каждом блоке
+    pre_sum = [0] * nu  # считаем сумму в блоках.
+    for i in range(wh):
+        pre_sum[int(i / nu)] += test[i]
+    # тк нумерация идет с нуля, предположим, что пользователь считает, что 0й элемент это первый
+    sum = 0
+    for i in range(ll - 1, rr):
+        if i % nu == 0 and i + nu - 1 <= rr - 1:
+            sum += pre_sum[int(i / nu)]
+            i += nu
+        else:
+            sum += test[i]
+            i += 1
+    print("Сумма: " + str(sum))
+
+
+print("Эта программа найдет сумму чисел на отрезке массива от r до l")
+print("Если хотите подключить файл с массивом, введите 'file'. Если сами наберете массив, введите 'input'")
+z = input("вводите: ")
+final_test = create_array(z)
+sqrt_decomposition(final_test)
