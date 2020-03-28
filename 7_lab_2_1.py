@@ -41,7 +41,7 @@ def sqrt_decomposition(test):
     while True:
         try:
             rr = int(input("Enter r: "))
-            if rr < wh and rr > ll:
+            if ll < rr < wh:
                 break
             else:
                 print("повторите ввод: ")
