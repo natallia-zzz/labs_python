@@ -65,6 +65,6 @@ def sqrt_decomposition(test):
 
 print("Эта программа найдет сумму чисел на отрезке массива от r до l")
 print("Если хотите подключить файл с массивом, введите 'file'. Если сами наберете массив, введите 'input'")
-z = input("вводите: ")
+z = input("вводите: ")  # пользователь выбирает как задает массив
 final_test = create_array(z)
 sqrt_decomposition(final_test)
