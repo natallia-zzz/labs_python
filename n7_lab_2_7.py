@@ -1,15 +1,26 @@
+import sys
+
+
 def leo_num(n):
+    while True:
+        try:
+            n = int(n)
+            if n > -1:
+                break
+            else:
+                print("повторите ввод")
+        except ValueError:
+            print("повторите ввод")
     a = [1, 1]
-    if n < 0:
-        print('Error. Number is less than 0')
-    elif n == 1 or n == 0:
-        print(1)
-    else:
-        b = range(n)
-        for i in b[2:n]:
-            a.append(1 + a[i - 2] + a[i - 1])
-        print(a[-1])
+    for i in range(2, n):
+        a.append(1 + a[i - 2] + a[i - 1])
+    print(a[-1])
 
 
-# m = int(input())
-# leo_num(m)
+def main():
+    n = sys.argv[1]
+    leo_num(n)
+
+
+if __name__ == '__main__':
+    main()
