@@ -2,13 +2,13 @@ import random as r
 import string as s
 import os
 import sys
-import argparse
 
 
 def status(sze, mb):
-    print(str(sze / mb) + '%')
+    sze *= 100
+    sys.stdout.write(str(sze / mb) + '%')
     sys.stdout.flush()
-    
+
 
 def gen_file(title, mb, k, ll):
     txtfile = title + '.txt'
@@ -29,11 +29,34 @@ def gen_file(title, mb, k, ll):
             for j in range(len):
                 a[j] = r.choice(s.ascii_letters)
             sentence[i] = ''.join(a)
+        ' '.join(sentence)
         sentence = sentence + '\n'  # добавление переноса строки
         file.write(sentence)
-    f_size = os.stat(txtfile).st_size  # in bytes
-    f_size /= 10000
-    status(f_size, mb)
+        f_size = os.stat(txtfile).st_size  # in bytes
+        # f_size /= 1000000
+        status(f_size, mb)
 
 
+def main():
+    title = sys.argv[1]
+    while True:
+        try:
+            mb = int(sys.argv[2])
+            if mb < 0:
+                mb = 0 - mb
+            break
+        except ValueError:
+            mb = r.randint(1, 1000)
+            break
+    if isintance(sys.argv[3], tuple):
+        k = sys.argv[3]
+    else:
+        k = ()
+    if isintance(sys.argv[4], tuple):
+        ll = sys.argv[4]
+    else:
+        ll = ()
+    gen_file(title, mb, k, ll)
 
+if __name__ == "__main__":
+    main()
