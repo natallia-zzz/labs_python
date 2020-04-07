@@ -1,4 +1,3 @@
-import sys
 
 
 def flatten_it(some_list):
