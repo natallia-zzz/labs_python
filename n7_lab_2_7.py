@@ -2,38 +2,35 @@ import argparse
 
 
 def leo_num(n):
-    if not isinstance(n, int):
-        print("неправильно введенное число")
-    elif n < 0:
-        print("нет такого числа. введенный параметр отрицательный ")
-    else:
-        a = [1, 1]
-        for i in range(2, n):
-            a.append(1 + a[i - 2] + a[i - 1])
-        print(a[-1])
+    try:
+        n = int(n)
+        if n < 0:
+            print(str(n) + " - отрицательнoe число. Нет такого числа Леонардо.")
+        else:
+            a = [1, 1]
+            for i in range(2, n):
+                a.append(1 + a[i - 2] + a[i - 1])
+            print(str(n)+"-е число Леонардо: " + str(a[-1]))
+    except ValueError:
+        print("неправильный параметр")
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--num", type=int, help="integer for function", nargs=1)  # только одно число
+    parser.add_argument("-n", "--num", type=int, help="integer for function", nargs="*")
     args = parser.parse_args()
     if args.num is not None:
-        leo_num(args.num)
+        for x in args.num:
+            leo_num(x)
     else:
         print("Напишите exit когда захотите завершить работу")
         n = input("введите число: ")
         while True:
-            try:
-                if n == 'exit':
-                    break
-                n = int(n)
-                if n < 0:
-                    n = input("Число отрицательное. Повторите ввод: ")
-                else:
-                    leo_num(n)
-                    n = input("введите число: ")
-            except ValueError:
-                n = input("Это не число. Повторите ввод: ")
+            if n == 'exit':
+                break
+            else:
+                leo_num(n)
+                n = input("введите другое число: ")
 
 
 if __name__ == '__main__':
