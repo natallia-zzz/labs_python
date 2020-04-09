@@ -1,35 +1,47 @@
-import sys
+import argparse
 
 
 def div_by_two(n):
-    while True:
-        if n.isdigit():
-            n = int(n)
-            break
-        else:
-            print("повторите ввод")
-    i = 0
+    try:
+        n = int(n)
+    except ValueError:
+        print("неправильно введен параметр")
+        return
     if n <= 0:
-        print("Число отрицательное и не может быть 2^n")
-        exit()
-    while True:
-        if n == 1:
-            print("2^0")
-            break
-        elif n % 2 == 1:
-            print("число не является 2^n")
+        print(str(n) + " отрицательное и не может быть 2^n")
+        return
+    if n == 1:
+        print(str(n) + "2^0")
+        return
+    i = 0
+    num = n
+    while n != 1:
+        if n % 2 == 1:
+            print(str(n) + " не является 2^n")
             break
         else:
             n /= 2
             i += 1
             if n == 1:
                 print(str(num) + " это 2^" + str(i))
-                break
 
 
 def main():
-    n = sys.argv[1]
-    div_by_two(n)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", "--num", type=int, help="integer for function", nargs='*')
+    args = parser.parse_args()
+    if args.num is not None:
+        for x in args.num:
+            div_by_two(x)
+    else:
+        print("Напишите exit когда захотите завершить работу")
+        n = input("введите число:\n")
+        while True:
+            if n == 'exit':
+                break
+            else:
+                div_by_two(n)
+                n = input("введите другое число:\n")
 
 
 if __name__ == '__main__':
