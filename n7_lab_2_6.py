@@ -13,11 +13,21 @@ def from_json(obj):
     if ch.isdigit() or ch == "-":
         return json_num(ch, obj)
     elif ch in letter:
-        return json_val(ch, obj)
+        val = json_val(ch, obj)
+        if val == "null":
+            return None
+        elif val == "true":
+            return True
+        elif val == "false":
+            return False
+        else:
+            raise ValueError
     elif ch == '"':
         return json_str(obj)
-    # list
-    # dict
+    elif ch == "[":
+        return json_list(obj)
+    elif ch == "{":
+        return json_dict(obj)
     else:
         raise ValueError
 
@@ -60,4 +70,40 @@ def json_str(obj):
         if ch == '"':
             return string
         else:
-            str += ch
+            string += ch
+
+
+def json_list(obj):
+    list = []
+    while True:
+        ch = next(obj)
+        if ch.isspace() or ch == ',':
+            continue
+        elif ch == "]":
+            return list
+        else:
+            list += from_json(obj)
+
+
+def json_dict(obj):
+    dict = {}
+    while True:
+        ch = next(obj)
+        if ch.isspace() or ch == ',':
+            continue
+        elif ch == '}':
+            return dict
+        elif ch == '"':
+            k = json_str(obj)
+            while True:
+                ch = next(obj)
+                if ch.isspace():
+                    continue
+                elif ch == ':':
+                    break
+                else:
+                    raise ValueError
+            v = from_json(obj)
+            dict[k] = v
+        else:
+            raise ValueError
