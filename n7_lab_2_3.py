@@ -1,7 +1,6 @@
 import argparse
-import os
 import tempfile
-import math
+import sys
 
 
 def merge_sort(a):  # функция сортировки
@@ -42,7 +41,7 @@ def merge_sort_file(file):
     while True:
         line = f.readline()
         bytes += len(line)
-        part += bytes
+        part += 0.5
         status(part, whole)
         if line == '':
             break
@@ -56,12 +55,30 @@ def merge_sort_file(file):
             bytes = 0
     merge_sort(lines)
     temp_files.append(write_temp_file(lines))
+    part = whole/2
+    status(part, whole)
+    while len(temp_files) > 1:
+        f1 = temp_files.pop(0)
+        f2 = temp_files.pop(0)
+        f3 = merge_files(f1, f2)
+        temp_files.append(f3)
+    f = open(file, 'w+b')
+    tmp = temp_files.pop()
+    tmp.seek(0)
+    while True:
+        line = tmp.readline()
+        part += 0.5
+        status(part, whole)
+        if line == b'':
+            break
+        f.write(line)
+    print('100%')
 
 
 def write_temp_file(lines):  # создаем временные файлы
     tmp = tempfile.TemporaryFile()
     for line in lines:
-        tmp.append(line.encode('utf-8'))
+        tmp.write(line.encode('utf-8'))
     return tmp
 
 
@@ -91,9 +108,12 @@ def line_count(file):
     f = open(file)
     n = 0
     line = f.readline()
-    while line != b'':
+    print("preparing")
+    while line != '':
         n += 1
         line = f.readline()
+    sys.stdout.write('\x1b[1A')
+    sys.stdout.write('\x1b[2K')
     f.close()
     return n
 
@@ -103,14 +123,14 @@ def main():
     parser.add_argument("title", type=str, help="title of file to be sorted")
     arg = parser.parse_args()
     if arg.title is not None:
-        txtfile = str(arg.title) + '.txt'
+        txtfile = arg.title + '.txt'
     else:
         txtfile = input("введите имя файла:\n") + '.txt'
     merge_sort_file(txtfile)
 
 
 def status(part, whole):
-    sze *= 100
+    part *= 100
     print(str(int(part / whole)) + '%')
     sys.stdout.write('\x1b[1A')
     sys.stdout.write('\x1b[2K')
