@@ -1,18 +1,19 @@
-from string import ascii_letters as letter
-
-
 def extract_file(file_name):
-    txtfile = file_name+'txt'
+    txtfile = file_name + 'txt'
     f = open(txtfile, "r")
-    print(f.read())
-    return from_json(f.read())
+    return from_json(str_gen(f))
+
+
+def str_gen(s):
+    for ch in s:
+        yield ch
 
 
 def from_json(obj):
     ch = next(obj)
     if ch.isdigit() or ch == "-":
         return json_num(ch, obj)
-    elif ch in letter:
+    elif ch.isalpha():
         val = json_val(ch, obj)
         if val == "null":
             return None
@@ -57,7 +58,7 @@ def json_val(first_ch, obj):
         ch = next(obj)
         if ch.isspace() or ch == ',':
             return val
-        elif ch.isdigit() or ch in letter:
+        elif ch.isdigit() or ch.isalpha():
             val += ch
         else:
             raise ValueError
@@ -74,15 +75,31 @@ def json_str(obj):
 
 
 def json_list(obj):
-    list = []
+    res = []
     while True:
         ch = next(obj)
-        if ch.isspace() or ch == ',':
+        if ch.isspace():
             continue
-        elif ch == "]":
-            return list
-        else:
-            list += from_json(obj)
+        if ch == "]":
+            return res
+        if ch == '{':
+            res.append(json_dict(obj))
+        elif ch == '[':
+            res.append(json_list(obj))
+        elif ch == '"':
+            res.append(json_str(obj))
+        elif ch.isdigit() or ch == '-':
+            res.append(json_num(ch, obj))
+        elif ch.isalpha():
+            value = json_val(ch, obj)
+            if value == "true":
+                res.append(True)
+            elif value == "false":
+                res.append(False)
+            elif value == "null":
+                res.append(None)
+            else:
+                raise ValueError
 
 
 def json_dict(obj):
