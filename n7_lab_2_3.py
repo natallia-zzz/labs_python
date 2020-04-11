@@ -1,6 +1,6 @@
 import argparse
-import tempfile
 import sys
+import os
 
 
 def merge_sort(a):  # функция сортировки
@@ -37,10 +37,10 @@ def merge_sort_file(file):
     f = open(file)
     temp_files = []
     lines = []
-    part = bytes = 0
+    part = byte_num = num = 0
     while True:
         line = f.readline()
-        bytes += len(line)
+        byte_num += len(line)
         part += 0.5
         status(part, whole)
         if line == '':
@@ -48,19 +48,21 @@ def merge_sort_file(file):
         line = line.split()
         merge_sort(line)
         lines.append(' '.join(line) + '\n')
-        if bytes > MEM_LIMIT:
+        if byte_num > MEM_LIMIT:
             merge_sort(lines)
-            temp_files.append(write_temp_file(lines))
+            temp_files.append(write_temp_file(lines, num))
             lines = []
-            bytes = 0
+            byte_num = 0
+            num += 1
     merge_sort(lines)
-    temp_files.append(write_temp_file(lines))
+    num += 1
+    temp_files.append(write_temp_file(lines, num))
     part = whole/2
     status(part, whole)
     while len(temp_files) > 1:
         f1 = temp_files.pop(0)
         f2 = temp_files.pop(0)
-        f3 = merge_files(f1, f2)
+        f3 = merge_files(f1, f2, num)
         temp_files.append(f3)
     f = open(file, 'w+b')
     tmp = temp_files.pop()
@@ -72,36 +74,40 @@ def merge_sort_file(file):
         if line == b'':
             break
         f.write(line)
+    delete_temp(tmp)
     print('100%')
 
 
-def write_temp_file(lines):  # создаем временные файлы
-    tmp = tempfile.TemporaryFile()
+def write_temp_file(lines, num):  # создаем временные файлы
+    temp = open("rand"+str(num)+".txt", 'w+b')
     for line in lines:
-        tmp.write(line.encode('utf-8'))
-    return tmp
+        temp.write(line.encode('utf-8'))
+    return temp
 
 
-def merge_files(file1, file2):  # чтоб собрать временные файлы в один отсортированный документ
+def merge_files(file1, file2, num):  # чтоб собрать временные файлы в один отсортированный документ
     file1.seek(0)
     file2.seek(0)
-    tmp = tempfile.TemporaryFile()
+    temp = open("rand"+str(num)+".txt", 'w+b')
+    num += 1
     line1 = file1.readline()
     line2 = file2.readline()
     while line1 != b'' and line2 != b'':  # аналогично алгоритму mergesort
         if line1 < line2:
-            tmp.write(line1)
+            temp.write(line1)
             line1 = file1.readline()
         else:
-            tmp.write(line2)
+            temp.write(line2)
             line2 = file2.readline()
     while line1 != b'':
-        tmp.write(line1)
+        temp.write(line1)
         line1 = file1.readline()
     while line2 != b'':
-        tmp.write(line2)
+        temp.write(line2)
         line2 = file2.readline()
-    return tmp
+    delete_temp(file1)
+    delete_temp(file2)
+    return temp
 
 
 def line_count(file):
@@ -134,6 +140,12 @@ def status(part, whole):
     print(str(int(part / whole)) + '%')
     sys.stdout.write('\x1b[1A')
     sys.stdout.write('\x1b[2K')
+
+
+def delete_temp(file):
+    file.close()
+    if os.path.exists(file.name):
+        os.remove(file.name)
 
 
 if __name__ == '__main__':
