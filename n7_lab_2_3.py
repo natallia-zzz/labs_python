@@ -40,7 +40,7 @@ def merge_sort_file(file):
     part = byte_num = num = 0
     while True:
         line = f.readline()
-        byte_num += len(line)
+        byte_num += sys.getsizeof(line)
         part += 0.5
         status(part, whole)
         if line == '':
