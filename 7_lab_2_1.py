@@ -30,22 +30,24 @@ def sqrt_decomposition(test):
     print("Выберите отрезок l до r.")
     wh = len(test)  # длина массива
     while True:
-        try:
-            ll = int(input("Введите l: "))
+        ll = input("введите l: ")
+        if ll.isdigit():
+            ll = int(ll)
             if ll < wh:
                 break
             else:
                 print("повторите ввод: ")
-        except ValueError:
+        else:
             print("повторите ввод: ")
     while True:
-        try:
-            rr = int(input("Enter r: "))
+        rr = input("введите r: ")
+        if rr.isdigit():
+            rr = int(rr)
             if ll < rr < wh:
                 break
             else:
                 print("повторите ввод: ")
-        except ValueError:
+        else:
             print("повторите ввод: ")
     nu = int(math.sqrt(wh - 1)) + 1  # количество блоков и чисел в каждом блоке
     pre_sum = [0] * nu  # считаем сумму в блоках.
